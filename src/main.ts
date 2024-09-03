@@ -5,6 +5,7 @@ import { Logger } from '@nestjs/common';
 import * as chalk from 'chalk';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import * as path from 'path';
+import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -28,7 +29,18 @@ async function bootstrap() {
   // Servir archivos estáticos desde la carpeta 'src/resources'
   app.useStaticAssets(path.join(__dirname, '..', 'src/resources'));
 
-  const port = process.env.PORT;
+  // Configuración de Swagger
+  const config = new DocumentBuilder()
+    .setTitle('API Documentation')
+    .setDescription('The API description')
+    .setVersion('1.0')
+    .addBearerAuth() // Si estás usando autenticación JWT
+    .build();
+  
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api/docs', app, document);
+
+  const port = process.env.PORT || 3000; // Añadir un valor por defecto
   await app.listen(port);
 
   Logger.log(
