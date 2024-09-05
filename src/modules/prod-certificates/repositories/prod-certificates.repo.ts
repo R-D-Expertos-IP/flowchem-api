@@ -159,7 +159,7 @@ export class RProdCertificateRepository {
       console.log(`Procesando: ${fullPath}`);
 
       if (item === 'img') {
-        continue; 
+        continue;
       }
 
       const stat = await fs.stat(fullPath);

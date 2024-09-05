@@ -56,7 +56,7 @@ export class SAuthService {
     const payload = {
       email: user.E_Mail,
       username: user.Username,
-      role: user.Role,
+      Role: user.Role,
       cardName: user.CardName,
       cardCode: user.CardCode,
       lastLogin: user.LastLogin,
@@ -76,7 +76,12 @@ export class SAuthService {
     return {
       token,
       E_Mail: user.E_Mail,
-      Username: user.Username
+      Username: user.Username,
+      Role: user.Role,
     };
+  }
+
+  async profile({ Username, role }: { Username: string; role: string }) {
+    return this.log.debug('Acceso aprobado');
   }
 }

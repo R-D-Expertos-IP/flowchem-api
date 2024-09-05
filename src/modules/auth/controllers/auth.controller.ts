@@ -11,9 +11,12 @@ import {
 import { SAuthService } from '../services/auth.service';
 import { DLoginDto } from '../dtos/login.dto';
 import { AuthGuard } from '../guards/auth.guard';
-import { Request } from '@nestjs/common';
 import { EUser } from 'src/modules/users/entities/user.entity';
 import { GetUser } from 'src/modules/decorators/getUser';
+import { Auth } from '../decorators/auth.decorator';
+import { Role } from '../common/enums/rol.enum';
+import { ActiveUser } from '../common/decorators/active-user.decorator';
+import { UserActiveInterface } from '../common/interfaces/user-active.interface';
 
 /**
  * Controlador de autenticación del sistema de FlowChem
@@ -54,14 +57,16 @@ export class CAuthController {
   }
 
   /**
-   * @method: Método GET para el dashboard del usuario.
-   * @returns Información del usuario autenticado.
+   * @method: Método GET para obtener el perfil del usuario.
+   * TODO:Ejemplo de guard en caso de que falle el frontend.
+   * @returns Perfil del usuario autenticado.
    */
-  @Get('dashboard')
+  @Get('profile')
+  @Auth(Role.SUPERUSUARIO)
   @HttpCode(HttpStatus.OK)
-  @UseGuards(AuthGuard)
-  dashboard(@Request() req) {
-    return req.user;
+  profile(@ActiveUser() user: UserActiveInterface) {
+    console.log(user);
+    return this.authService.profile(user);
   }
 
   /**
@@ -74,10 +79,20 @@ export class CAuthController {
   getMeUserRequest(@GetUser() user: EUser): EUser {
     try {
       this.log.log('Obteniendo toda la información del Usuario');
-      this.log.log('Proceso de traida de datos exitoso');
+      this.log.debug(`Usuario completo: ${JSON.stringify(user)}`);
+
+      if (user && Array.isArray(user.Role)) {
+        this.log.log(`Los roles del usuario son: ${user.Role.join(', ')}`);
+      } else if (user && user.Role) {
+        this.log.log(`El rol del usuario es: ${user.Role}`);
+      } else {
+        this.log.log('El usuario no tiene roles asignados');
+      }
+
+      this.log.log('Proceso de traída de datos exitoso');
       return user;
     } catch (error) {
-      this.log.error('Error durante la traida de datos', error);
+      this.log.error('Error durante la traída de datos', error);
       throw error;
     }
   }
