@@ -14,29 +14,36 @@ export class SProdCertificatesService {
   /**
    * Método para obtener los items distintos por código de tarjeta.
    * @param cardCode: El código de la tarjeta del cliente.
+   * @param role: El rol del usuario.
    * @returns Los items distintos por código de tarjeta.
    */
-  async getDistinctItemsByCardCodeRequestService(cardCode: string) {
+  async getDistinctItemsByCardCodeRequestService(
+    cardCode: string,
+    role: string,
+  ) {
     try {
       // Registrar el inicio de la operación
-      this.log.log(`Obteniendo items distintos para el código ${cardCode}...`);
+      this.log.log(
+        `Obteniendo items distintos para el código ${cardCode} con rol ${role}...`,
+      );
 
       // Llamar al repositorio y obtener los items
       const items =
         await this.prodCertificatesRepository.getDistinctItemsByCardCodeRequestRepo(
           cardCode,
+          role,
         );
 
       // Registrar el éxito de la operación
       this.log.log(
-        `Se obtuvieron los items distintos para el código ${cardCode}.`,
+        `Se obtuvieron los items distintos para el código ${cardCode} con rol ${role}.`,
       );
 
       return items;
     } catch (error) {
       // Registrar el error
       this.log.error(
-        `Error al obtener los items distintos para el código ${cardCode}: ${error.message}`,
+        `Error al obtener los items distintos para el código ${cardCode} con rol ${role}: ${error.message}`,
       );
 
       // Lanzar la excepción

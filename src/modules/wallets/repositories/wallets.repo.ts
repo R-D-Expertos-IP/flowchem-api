@@ -24,12 +24,16 @@ export class RWalletRepository {
    * @param CardCode: El código de la tarjeta del cliente.
    * @returns secondEntityManager.query(`SET NOCOUNT ON; SET ANSI_NULLS ON; SET ANSI_WARNINGS ON; EXEC dbo.CM_SP_FacturaClientesD @CardCode='${CardCode}'`)
    */
-  async getFacturaClientesDRepo(CardCode: string) {
+  async getFacturaClientesDRepo(CardCode: string, RoleUser: string) {
     try {
       this.log.log(`Parámetros recibidos: CardCode= ${CardCode}`);
       this.log.log('Ejecutando consulta SQL...');
+      let role = 0;
+      if (RoleUser == 'Superusuario') {
+        role = 1;
+      }
       const bill = await this.secondEntityManager.query(
-        `SET NOCOUNT ON; SET ANSI_NULLS ON; SET ANSI_WARNINGS ON; EXEC dbo.CM_SP_FacturaClientesD @CardCode='${CardCode}'`,
+        `SET NOCOUNT ON; SET ANSI_NULLS ON; SET ANSI_WARNINGS ON; EXEC dbo.CM_SP_FacturaClientesD @CardCode='${CardCode}', @RoleUser='${role}'`,
       );
       this.log.log(
         `Consulta SQL ejecutada con éxito. Se obtuvieron ${bill.length} registros.`,

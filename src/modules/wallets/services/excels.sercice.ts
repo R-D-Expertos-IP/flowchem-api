@@ -20,7 +20,8 @@ export class SExcelService {
 
     worksheet.columns = [
       { header: 'Número de Factura', key: 'docEntry', width: 10 },
-      { header: 'Fecha seleccionada', key: 'docDate', width: 15 },
+      { header: 'Documento Interno', key: 'docNum', width: 10 },
+      { header: 'Fecha contabilización', key: 'docDate', width: 15 },
       { header: 'Código del Cliente', key: 'cardCode', width: 20 },
       { header: 'Nombre del Cliente', key: 'cardName', width: 30 },
       { header: 'Subtotal', key: 'subTotal', width: 15 },
@@ -36,6 +37,7 @@ export class SExcelService {
     orders.forEach((order) => {
       worksheet.addRow({
         docEntry: order.DocEntry,
+        docNum: order.DocNum,
         docDate: order.DocDate,
         cardCode: order.CardCode,
         cardName: order.CardName,

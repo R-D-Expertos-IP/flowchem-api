@@ -1,7 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectEntityManager } from '@nestjs/typeorm';
 import { EntityManager } from 'typeorm';
-
 import * as fs from 'fs/promises';
 import * as path from 'path';
 import { join } from 'path';
@@ -23,19 +22,30 @@ export class RProdCertificateRepository {
   /**
    * Método para obtener los items distintos por código de tarjeta.
    * @param cardCode: El código de la tarjeta del cliente.
+   * @param role: El role de la tarjeta del cliente.
    * @returns Los items distintos por código de tarjeta.
    */
-  async getDistinctItemsByCardCodeRequestRepo(cardCode: string) {
+  async getDistinctItemsByCardCodeRequestRepo(cardCode: string, role: string) {
     try {
       // Registrar el inicio de la operación
-      this.log.log(`Parámetros recibidos: cardCode= ${cardCode}`);
+      this.log.log(
+        `Parámetros recibidos: cardCode= ${cardCode}, role= ${role}`,
+      );
       this.log.log('Ejecutando consulta SQL...');
 
+      let query = '';
+
+      // Determinar la consulta SQL según el rol
+      if (role === 'Superusuario') {
+        query = `SELECT DISTINCT CAST(ItemCode AS NVARCHAR(MAX)) AS ItemCode, Dscription FROM INV1 WHERE ItemCode IS NOT NULL 
+                 AND ItemCode != 'ACTIVOS FIJOS'`;
+      } else {
+        query = `SELECT DISTINCT CAST(ItemCode AS NVARCHAR(MAX)) AS ItemCode, Dscription FROM INV1 WHERE BaseCard = '${cardCode}' AND ItemCode IS NOT NULL 
+                 AND ItemCode != 'ACTIVOS FIJOS'`;
+      }
+
       // Ejecutar la consulta SQL y obtener los items
-      const items = await this.secondEntityManager.query(
-        `SELECT DISTINCT CAST(ItemCode AS NVARCHAR(MAX)) AS ItemCode, Dscription FROM INV1 WHERE BaseCard = '${cardCode}' AND ItemCode IS NOT NULL 
-        AND ItemCode != 'ACTIVOS FIJOS'`,
-      );
+      const items = await this.secondEntityManager.query(query);
 
       // Registrar el éxito de la operación
       this.log.log(

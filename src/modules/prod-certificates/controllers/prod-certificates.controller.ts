@@ -28,20 +28,25 @@ export class CProdCertificatesController {
   /**
    * Método GET para obtener los elementos distintos por código de tarjeta.
    * @param cardCode: El código de la tarjeta del cliente.
+   * @param role: El rol del usuario.
    * @returns Los elementos distintos por código de tarjeta.
    */
   @Get('distinctItems')
-  async getDistinctItemsByCardCodeRequest(@Query('cardCode') cardCode: string) {
+  async getDistinctItemsByCardCodeRequest(
+    @Query('cardCode') cardCode: string,
+    @Query('role') role: string,
+  ) {
     try {
       // Registrar el inicio de la operación
       console.log(
-        `Obteniendo elementos distintos para el código de tarjeta: ${cardCode}`,
+        `Obteniendo elementos distintos para el código de tarjeta: ${cardCode} con rol: ${role}`,
       );
 
       // Llamar al servicio y obtener los resultados
       const result =
         await this.prodCertificatesService.getDistinctItemsByCardCodeRequestService(
           cardCode,
+          role,
         );
 
       // Registrar el éxito de la operación

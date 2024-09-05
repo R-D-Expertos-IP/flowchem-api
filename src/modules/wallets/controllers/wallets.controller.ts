@@ -3,6 +3,7 @@ import {
   Get,
   HttpException,
   HttpStatus,
+  Param,
   Query,
   Res,
 } from '@nestjs/common';
@@ -24,11 +25,16 @@ export class CWalletsController {
    * @param CardCode: El código de la tarjeta del cliente.
    * @returns walletsService.getFacturaClientesDService(CardCode)
    */
-  @Get('clientsDetail')
-  async getInvoiceClientsDetailRequest(@Query('CardCode') CardCode: string) {
+  @Get('clientsDetail/:cardCode/:role')
+  async getInvoiceClientsDetailRequest(
+    @Param('cardCode') CardCode: string,
+    @Param('role') RoleUser: string,
+  ) {
+    console.log('u', RoleUser);
     try {
       return await this.walletsService.getInvoiceClientsDetailRequestService(
         CardCode,
+        RoleUser,
       );
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);

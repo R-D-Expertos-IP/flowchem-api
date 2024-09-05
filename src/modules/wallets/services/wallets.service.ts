@@ -24,13 +24,13 @@ export class SWalletsService {
    * @param CardCode: El código de la tarjeta del cliente.
    * @returns walletsRepository.getFacturaClientesDRepo(CardCode)
    */
-  async getInvoiceClientsDetailRequestService(CardCode: string) {
+  async getInvoiceClientsDetailRequestService(CardCode: string, RoleUser: string) {
     try {
       this.log.log(
-        `Obteniendo factura de clientes con el código ${CardCode}...`,
+        `Obteniendo factura de clientes con el código ${CardCode} con el rol ${RoleUser}...`,
       );
       const factura =
-        await this.walletsRepository.getFacturaClientesDRepo(CardCode);
+        await this.walletsRepository.getFacturaClientesDRepo(CardCode, RoleUser);
       this.log.log(
         `Se obtuvo la factura de clientes con el código ${CardCode}.`,
       );
